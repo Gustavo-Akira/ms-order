@@ -1,6 +1,7 @@
 package br.com.gustavoakira.ms.order.application.services;
 
 import br.com.gustavoakira.ms.order.application.domain.Order;
+import br.com.gustavoakira.ms.order.application.domain.Page;
 import br.com.gustavoakira.ms.order.application.ports.OrderRepositoryPort;
 import br.com.gustavoakira.ms.order.application.ports.OrderServicePort;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class OrderServiceImpl implements OrderServicePort {
     }
 
     @Override
-    public List<Order> getOrders() {
-        return port.getOrders();
+    public org.springframework.data.domain.Page<Order> getOrders(Page page) {
+        return port.getOrders(page);
     }
 }

@@ -2,9 +2,12 @@ package br.com.gustavoakira.ms.order.adapters.outbound.persistence;
 
 import br.com.gustavoakira.ms.order.adapters.outbound.persistence.entity.OrderEntity;
 import br.com.gustavoakira.ms.order.application.domain.Order;
+import br.com.gustavoakira.ms.order.application.domain.Page;
 import br.com.gustavoakira.ms.order.application.ports.OrderRepositoryPort;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -42,7 +45,8 @@ public class PostgresOrderRepository implements OrderRepositoryPort {
     }
 
     @Override
-    public List<Order> getOrders() {
-        return orderRepository.findAll().stream().map(x->mapper.map(x,Order.class)).collect(Collectors.toList());
+    public org.springframework.data.domain.Page<Order> getOrders(Page page) {
+        Pageable pageable = PageRequest.of(page.getPage(), page.getPageSize());
+        return orderRepository.findAll(pageable).map(x->mapper.map(x,Order.class));
     }
 }

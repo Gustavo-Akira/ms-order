@@ -2,12 +2,14 @@ package br.com.gustavoakira.ms.order.adapters.inbound.controller;
 
 import br.com.gustavoakira.ms.order.adapters.dtos.OrderDto;
 import br.com.gustavoakira.ms.order.application.domain.Order;
+import br.com.gustavoakira.ms.order.application.domain.Page;
 import br.com.gustavoakira.ms.order.application.ports.OrderServicePort;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -17,6 +19,17 @@ public class OrderController {
 
     @Autowired
     private ModelMapper mapper;
+
+    @GetMapping("/orders/{page}")
+    public ResponseEntity<org.springframework.data.domain.Page<Order>> getOrders(@PathVariable Integer page){
+        return ResponseEntity.ok(port.getOrders(new Page(5,page)));
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<org.springframework.data.domain.Page<Order>> getOrders(){
+        return ResponseEntity.ok(port.getOrders(new Page(5,0)));
+    }
+
 
     @GetMapping("/order/{id}")
     public ResponseEntity<Order> getOrder(@PathVariable UUID id){
