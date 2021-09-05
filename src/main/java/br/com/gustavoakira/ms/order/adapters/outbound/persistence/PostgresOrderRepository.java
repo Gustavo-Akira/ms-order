@@ -1,6 +1,8 @@
 package br.com.gustavoakira.ms.order.adapters.outbound.persistence;
 
+import br.com.gustavoakira.ms.core.events.OrderMessage;
 import br.com.gustavoakira.ms.order.adapters.outbound.persistence.entity.OrderEntity;
+import br.com.gustavoakira.ms.order.adapters.outbound.persistence.producer.OrderProducer;
 import br.com.gustavoakira.ms.order.application.domain.Order;
 import br.com.gustavoakira.ms.order.application.domain.Page;
 import br.com.gustavoakira.ms.order.application.ports.OrderRepositoryPort;
@@ -10,16 +12,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class PostgresOrderRepository implements OrderRepositoryPort {
+
     @Autowired
     private SpringOrderRepository orderRepository;
+
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private OrderProducer producer;
 
     @Override
     public Order getOrder(UUID id) {
@@ -28,7 +33,9 @@ public class PostgresOrderRepository implements OrderRepositoryPort {
 
     @Override
     public Order saveOrder(Order order) {
-        return mapper.map(orderRepository.save(mapper.map(order, OrderEntity.class)),Order.class);
+        Order order1 = mapper.map(orderRepository.save(mapper.map(order, OrderEntity.class)),Order.class);
+        this.producer.send(new OrderMessage(order1.getProducts(),order1.getId()));
+        return order1;
     }
 
     @Override

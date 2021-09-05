@@ -1,8 +1,8 @@
 package br.com.gustavoakira.ms.order.adapters.configuration;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,21 +14,26 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.url}")
     private String url;
 
+    @Value("${rabbitmq.product}")
+    private String product;
+
+    @Value("${rabbitmq.order}")
+    private String order;
+
     @Bean
     public Queue queue(){
-        return new Queue("ms-email",true);
+        return new Queue(order, true,false,false);
     }
 
     @Bean
-    public ConnectionFactory rabbitConnectionFactory(){
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        return connectionFactory;
+    public Queue queue1(){
+        return new Queue(product, true,false,true);
     }
+
 
     @Bean
     public Jackson2JsonMessageConverter messageConverter(){
         return new Jackson2JsonMessageConverter();
     }
-
 
 }

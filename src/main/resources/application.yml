@@ -12,3 +12,5 @@ spring:
 
 rabbitmq:
     url: localhost
+    order: ms-order
+    product: ms-product
