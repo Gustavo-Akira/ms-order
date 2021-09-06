@@ -27,7 +27,7 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue queue1(){
-        return new Queue(product, true,false,true);
+        return new Queue(product, true,false,false);
     }
 
 
